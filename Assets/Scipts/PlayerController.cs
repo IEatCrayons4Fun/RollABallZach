@@ -5,18 +5,22 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 0;
+    public float jumpForce = 5;
     public TextMeshProUGUI countText;
+    public GameObject winTextObject;
+
     private Rigidbody rb;
     private int count;
     private float movementX;
     private float movementY;
-    public GameObject winTextObject;
+    private bool isGrounded;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        count = 0;
         SetCountText();
         rb = GetComponent<Rigidbody>();
-        count = 0;
         winTextObject.SetActive(false);
     }
 
@@ -31,6 +35,13 @@ public class PlayerController : MonoBehaviour
         
         movementX = movementVector.x;
         movementY = movementVector.y; 
+    }
+
+    void OnJump(){
+        if(isGrounded){
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
     }
     void SetCountText(){
         countText.text = "Count: " + count.ToString();
@@ -52,6 +63,13 @@ public class PlayerController : MonoBehaviour
             count = count + 1;
             SetCountText();
         } 
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
     }
 }
 
