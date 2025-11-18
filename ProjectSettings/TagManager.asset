@@ -6,11 +6,13 @@ TagManager:
   tags:
   - PickUp
   - Ground
+  - Wall
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground/Obstacles
   - Water
   - UI
   - 

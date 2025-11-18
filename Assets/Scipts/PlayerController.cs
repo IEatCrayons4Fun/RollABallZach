@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
         countText.text = "Count: " + count.ToString();
         if (count == 18){
             winTextObject.SetActive(true);
+            Destroy(GameObject.FindGameObjectWithTag("Enemy"));
         }
     }
         
@@ -66,7 +67,13 @@ public class PlayerController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+            winTextObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+        }
+        else if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
         }
