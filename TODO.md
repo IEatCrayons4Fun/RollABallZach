@@ -1,0 +1,4 @@
+- [ ] Rename Assets/Scipts/CameraContoller.cs to Assets/Scipts/CameraController.cs
+- [ ] Add cursor locking and visibility settings in Awake method
+- [ ] Add smoothing variables (smoothSpeed, currentYaw, currentPitch)
+- [ ] Modify OnLook and LateUpdate methods to implement rotation smoothing
