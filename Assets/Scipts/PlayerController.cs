@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
         }
         
         // Win condition
-        if (count >= 16)
+        if (count >= 105)
         {
             if (winTextObject != null)
             {
@@ -156,6 +156,16 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             count++;
+            SetCountText();
+        }
+        if (other.gameObject.CompareTag("BigPickUp")){
+            other.gameObject.SetActive(false);
+            count += 5;
+            SetCountText();
+        }
+        if (other.gameObject.CompareTag("InstaWin")){
+            other.gameObject.SetActive(false);
+            count += 105;
             SetCountText();
         }
     }

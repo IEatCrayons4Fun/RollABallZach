@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4416557690638599600
+--- !u!1 &4335448462989872330
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2728071474096296848}
-  - component: {fileID: 6115268058964849096}
-  - component: {fileID: 939482379601189469}
+  - component: {fileID: 8624165642999172346}
+  - component: {fileID: 5440684984358262668}
+  - component: {fileID: 334842429641713068}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -18,34 +18,34 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2728071474096296848
+--- !u!4 &8624165642999172346
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416557690638599600}
+  m_GameObject: {fileID: 4335448462989872330}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.09, y: -0.1, z: 0.14}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.46193978, y: -0.19134173, z: -0.19134173, w: 0.84462327}
+  m_LocalPosition: {x: -0.23, y: -0.03, z: 0.28}
+  m_LocalScale: {x: 1.25, y: 1.2499999, z: 1.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7390194922554075290}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!108 &6115268058964849096
+--- !u!108 &5440684984358262668
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416557690638599600}
+  m_GameObject: {fileID: 4335448462989872330}
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 0.07381892, g: 1, b: 0, a: 1}
-  m_Intensity: 17.13
-  m_Range: 3.12
+  m_Color: {r: 0.061502814, g: 1, b: 0, a: 1}
+  m_Intensity: 9.68
+  m_Range: 3.06
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -98,13 +98,13 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!114 &939482379601189469
+--- !u!114 &334842429641713068
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416557690638599600}
+  m_GameObject: {fileID: 4335448462989872330}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
@@ -139,8 +139,8 @@ GameObject:
   - component: {fileID: 71153207798123221}
   - component: {fileID: 3784860592530757461}
   - component: {fileID: 70454054401476158}
-  - component: {fileID: 6171358200048039243}
   - component: {fileID: 7252815400567783078}
+  - component: {fileID: 6171358200048039243}
   m_Layer: 0
   m_Name: PickUp
   m_TagString: PickUp
@@ -158,10 +158,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.46193978, y: 0.19134173, z: 0.19134173, w: 0.84462327}
   m_LocalPosition: {x: -10.225, y: 0.7, z: -4.165}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 2728071474096296848}
+  - {fileID: 8624165642999172346}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: 45, z: 45}
 --- !u!33 &71153207798123221
@@ -241,18 +241,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6171358200048039243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7434752657109326742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdfc73bb393026f418a0819ab1de6df5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!54 &7252815400567783078
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -280,3 +268,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6171358200048039243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7434752657109326742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdfc73bb393026f418a0819ab1de6df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'

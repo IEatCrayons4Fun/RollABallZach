@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Wall
   - Enemy
+  - BigPickUp
+  - InstaWin
   layers:
   - Default
   - TransparentFX
