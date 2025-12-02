@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
     private float cameraRotationY = 0f;
     private Vector2 lookInput;
     public InputAction unlockCursorAction;
-    private string[] tagsToDestroy = {"PickUp", "BigPickUp", "InstaWin", "HidingDoor"};
+    private string[] tagsToDestroy = {"PickUp", "BigPickUp", "InstaWin", "HidingDoor", "Enemy"};
     private bool shouldBrake = false;
 
     void OnEnable()
@@ -359,6 +359,8 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(FadeOutText(tmp));
             }
         }
+        GameObject torch = GameObject.FindWithTag("Torch");
+        if (torch != null) torch.SetActive(true);
     }
     
     private IEnumerator FadeOutText(TextMeshProUGUI tmp)
