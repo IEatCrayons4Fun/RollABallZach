@@ -15,6 +15,7 @@ TagManager:
   - Door
   - HidingDoor
   - Torch
+  - SpeedPickUp
   layers:
   - Default
   - TransparentFX

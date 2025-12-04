@@ -14,6 +14,14 @@ public class PlayerController : MonoBehaviour
     [Header("Mechanics")]
     private int health;
 
+    [Header("Speed Boost")]
+    public float boostMultiplier = 2f;      // how much faster
+    public float boostDuration = 5f;        // how long it lasts
+    private bool boostActive = false;
+    private float boostEndTime;
+    private float baseSpeed;                // store original speed
+    private float baseMaxSpeed;             // store original max speed
+
     [Header("Movement")]
     public float speed = 10f;
     public float maxSpeed = 20f; // NEW: Maximum speed cap
@@ -69,6 +77,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        
+        baseSpeed = speed;
+        baseMaxSpeed = maxSpeed;
 
         if (playerType == PlayerType.Capsule)
         {
@@ -95,6 +106,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (boostActive && Time.time > boostEndTime)
+        {
+            speed = baseSpeed;
+            maxSpeed = baseMaxSpeed;
+            boostActive = false;
+        }
         if (useMouseLook)
         {
             cameraRotationY += lookInput.x * mouseSensitivity;
@@ -202,15 +219,6 @@ public class PlayerController : MonoBehaviour
         }
 
         bool wasGrounded = isGrounded;
-        // If groundLayer is not set (0), check everything
-        if (groundLayer == 0)
-        {
-            isGrounded = Physics.Raycast(transform.position, Vector3.down, checkDistance);
-        }
-        else
-        {
-            isGrounded = Physics.Raycast(transform.position, Vector3.down, checkDistance, groundLayer);
-        }
         
         // Update coyote time
         if (isGrounded)
@@ -244,17 +252,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump()
     {
-        // Use coyote time for more forgiving jumps
+        
         if (isGrounded || Time.time - lastGroundedTime < coyoteTime)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            lastGroundedTime = 0; // Prevent double jump
+            lastGroundedTime = 0;
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        // Removed ground detection from here - using raycast instead
+        
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
@@ -297,7 +305,12 @@ public class PlayerController : MonoBehaviour
         else if (other.CompareTag("InstaWin"))
         {
             other.gameObject.SetActive(false);
-            count = 105;
+            count += 105;
+        }
+        else if (other.CompareTag("SpeedPickUp")){
+
+            other.gameObject.SetActive(false);
+            ActiateSpeedBoost();
         }
         SetCountText();
     }
@@ -335,6 +348,14 @@ public class PlayerController : MonoBehaviour
 
             rb.AddForce(brakeForceVector, ForceMode.Acceleration);
         }
+    }
+
+    void ActiateSpeedBoost()
+    {
+        speed = baseSpeed * boostMultiplier;
+        maxSpeed = baseMaxSpeed * boostMultiplier;
+        boostEndTime = Time.time + boostDuration;
+        boostActive = true;
     }
     
     public void TriggerWin()
@@ -405,5 +426,5 @@ public class PlayerController : MonoBehaviour
                 Death();
             }
         }
-}
+    }
 }
