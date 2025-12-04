@@ -14,6 +14,7 @@ TagManager:
   - Lava
   - Door
   - HidingDoor
+  - Torch
   layers:
   - Default
   - TransparentFX

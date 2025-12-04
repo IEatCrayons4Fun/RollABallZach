@@ -325,8 +325,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   playerType: 1
   speed: 10
-  jumpForce: 6.12
+  maxSpeed: 20
+  acceleration: 50
+  airControl: 0.73
+  jumpForce: 7.31
   brakeForce: 10
+  coyoteTime: 0.15
+  groundCheckDistance: 0.4
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
   cameraTransform: {fileID: 6382209038796821971}
   cameraDistance: 10
   cameraHeight: 5
@@ -334,6 +342,8 @@ MonoBehaviour:
   useMouseLook: 1
   countText: {fileID: 0}
   winTextObject: {fileID: 0}
+  textDisplayDuration: 2
+  fadeDuration: 1.5
   unlockCursorAction:
     m_Name: Unlock Cursor
     m_Type: 0

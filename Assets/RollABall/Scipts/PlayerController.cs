@@ -392,4 +392,18 @@ public class PlayerController : MonoBehaviour
     {
         return count;
     }
+
+    public void TakeDamage(int damageAmount)
+    {
+        if (playerType == PlayerType.Capsule)
+        {
+            health -= damageAmount;
+            SetHealthText();
+            
+            if (health <= 0)
+            {
+                Death();
+            }
+        }
+}
 }
