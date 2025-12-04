@@ -4,17 +4,16 @@ using TMPro;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     public enum PlayerType { Sphere, Capsule }
-    [Header("Player Type")]
+    
     public PlayerType playerType = PlayerType.Sphere;
 
-    [Header("Mechanics")]
+    
     private int health;
 
-    [Header("Speed Boost")]
+    
     public float boostMultiplier = 2f;      // how much faster
     public float boostDuration = 5f;        // how long it lasts
     private bool boostActive = false;
@@ -22,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private float baseSpeed;                // store original speed
     private float baseMaxSpeed;             // store original max speed
 
-    [Header("Movement")]
+    
     public float speed = 10f;
     public float maxSpeed = 20f; // NEW: Maximum speed cap
     public float acceleration = 50f;
