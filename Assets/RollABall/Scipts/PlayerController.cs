@@ -10,29 +10,20 @@ public class PlayerController : MonoBehaviour
     
     public PlayerType playerType = PlayerType.Sphere;
 
-    
-    private int health;
+    private int health = 100;
 
-    
-    public float boostMultiplier = 2f;      // how much faster
-    public float boostDuration = 5f;        // how long it lasts
-    private bool boostActive = false;
-    private float boostEndTime;
-    private float baseSpeed;                // store original speed
-    private float baseMaxSpeed;             // store original max speed
 
-    
+    [Header("Movement")]
     public float speed = 10f;
-    public float maxSpeed = 20f; // NEW: Maximum speed cap
+    public float maxSpeed = 20f;
     public float acceleration = 50f;
     public float airControl = 0.3f;
     public float jumpForce = 12f;
     public float brakeForce = 10f;
-    public float coyoteTime = 0.15f; // NEW: Grace period for jumping after leaving ground
+    public float steeringMultiplier = 0.3f;
+    public float angularDamping = 0.95f;
 
-    [Header("Ground Detection")] // NEW: Better ground detection
-    public float groundCheckDistance = 0.1f;
-    public LayerMask groundLayer;
+
 
     [Header("Camera")]
     public Transform cameraTransform;
@@ -54,12 +45,11 @@ public class PlayerController : MonoBehaviour
     private float movementX;
     private float movementY;
     private bool isGrounded;
-    private float lastGroundedTime; // NEW: For coyote time
     private float cameraRotationX = 0f;
     private float cameraRotationY = 0f;
     private Vector2 lookInput;
     public InputAction unlockCursorAction;
-    private string[] tagsToDestroy = {"PickUp", "BigPickUp", "InstaWin", "HidingDoor", "Enemy"};
+    private string[] tagsToDestroy = {"PickUp", "BigPickUp", "InstaWin", "HidingDoor", "Enemy", "SpeedPickUp"};
     private bool shouldBrake = false;
 
     void OnEnable()
@@ -76,16 +66,18 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        
-        baseSpeed = speed;
-        baseMaxSpeed = maxSpeed;
 
         if (playerType == PlayerType.Capsule)
         {
             rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            healthText = GameObject.Find("HealthText")?.GetComponent<TextMeshProUGUI>(); // IMPROVED: Null safety
-            health = 100;
+            GameObject healthTextObj = GameObject.Find("HealthText");
+            if (healthTextObj != null)
+            {
+                healthText = healthTextObj.GetComponent<TextMeshProUGUI>();
+            }
             SetHealthText();
+            GameObject countTextObj = GameObject.Find("CountText");
+            if (countTextObj != null) Destroy(countTextObj);
         }
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -95,22 +87,11 @@ public class PlayerController : MonoBehaviour
         SetCountText();
         if (winTextObject != null) winTextObject.SetActive(false);
         if (cameraTransform == null) cameraTransform = Camera.main.transform;
-        
-        // Set default ground layer if not set
-        if (groundLayer == 0)
-        {
-            groundLayer = LayerMask.GetMask("Default");
-        }
     }
 
     void Update()
     {
-        if (boostActive && Time.time > boostEndTime)
-        {
-            speed = baseSpeed;
-            maxSpeed = baseMaxSpeed;
-            boostActive = false;
-        }
+        
         if (useMouseLook)
         {
             cameraRotationY += lookInput.x * mouseSensitivity;
@@ -135,7 +116,6 @@ public class PlayerController : MonoBehaviour
         shouldBrake = Keyboard.current.leftShiftKey.isPressed;
 
         UpdateCamera();
-        CheckGrounded(); // NEW: Better ground detection
     }
 
     void FixedUpdate()
@@ -153,34 +133,29 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 torque = (cameraTransform.right * movementY - cameraTransform.forward * movementX) * speed;
             
-            // Only limit speed when accelerating in the direction you're already moving
             Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             float currentSpeed = horizontalVelocity.magnitude;
             
             if (currentSpeed < maxSpeed)
             {
-                // Under max speed, apply full torque
                 rb.AddTorque(torque);
             }
             else
             {
-                // At max speed, only allow torque perpendicular to velocity (steering)
                 Vector3 velocityDir = horizontalVelocity.normalized;
                 Vector3 torqueDir = torque.normalized;
                 float alignment = Vector3.Dot(velocityDir, Vector3.Cross(torqueDir, Vector3.up));
                 
-                // If trying to accelerate forward, limit it. If turning, allow it.
                 if (Mathf.Abs(alignment) > 0.5f)
                 {
-                    rb.AddTorque(torque * 0.3f); // Allow some steering
+                    rb.AddTorque(torque * steeringMultiplier);
                 }
             }
             
-            // Apply brake to angular velocity too
             if (shouldBrake)
             {
                 ApplyBrake();
-                rb.angularVelocity *= 0.95f; // Slow down rotation
+                rb.angularVelocity *= angularDamping;
             }
         }
         else if (playerType == PlayerType.Capsule)
@@ -189,44 +164,29 @@ public class PlayerController : MonoBehaviour
             Vector3 targetVelocity = movement * speed * controlMultiplier;
             Vector3 currentVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
-            // Check speed limit
             if (currentVelocity.magnitude < maxSpeed || Vector3.Dot(targetVelocity.normalized, currentVelocity.normalized) < 0)
             {
                 Vector3 velocityChange = (targetVelocity - currentVelocity);
                 velocityChange = Vector3.ClampMagnitude(velocityChange, acceleration * Time.fixedDeltaTime);
                 rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
             }
-            
-            if (shouldBrake)
-            {
-                ApplyBrake();
-            }
         }
     }
 
-    // NEW: Improved ground detection using raycast
-    void CheckGrounded()
+    void OnCollisionStay(Collision collision)
     {
-        float checkDistance = groundCheckDistance;
-        if (playerType == PlayerType.Sphere)
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            checkDistance += GetComponent<SphereCollider>() ? GetComponent<SphereCollider>().radius : 0.5f;
+            isGrounded = true;
         }
-        else
-        {
-            checkDistance += GetComponent<CapsuleCollider>() ? GetComponent<CapsuleCollider>().height * 0.5f : 0.5f;
-        }
+    }
 
-        bool wasGrounded = isGrounded;
-        
-        // Update coyote time
-        if (isGrounded)
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            lastGroundedTime = Time.time;
+            isGrounded = false;
         }
-        
-        // Debug visualization - ENABLE THIS to see if raycast is hitting
-        Debug.DrawRay(transform.position, Vector3.down * checkDistance, isGrounded ? Color.green : Color.red);
     }
 
     void UpdateCamera()
@@ -251,24 +211,22 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump()
     {
-        
-        if (isGrounded || Time.time - lastGroundedTime < coyoteTime)
+        if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            lastGroundedTime = 0;
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        
+        if (collision.gameObject == null) return;
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Death();
         }
         
-        if(playerType == PlayerType.Capsule && collision.gameObject.CompareTag("Hazard"))
+        if (playerType == PlayerType.Capsule && collision.gameObject.CompareTag("Hazard"))
         {
             health -= 20;
             SetHealthText();
@@ -278,7 +236,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if(playerType == PlayerType.Capsule && collision.gameObject.CompareTag("Lava"))
+        if (playerType == PlayerType.Capsule && collision.gameObject.CompareTag("Lava"))
         {
             health -= 100;
             SetHealthText();
@@ -306,11 +264,6 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             count += 105;
         }
-        else if (other.CompareTag("SpeedPickUp")){
-
-            other.gameObject.SetActive(false);
-            ActiateSpeedBoost();
-        }
         SetCountText();
     }
 
@@ -329,6 +282,7 @@ public class PlayerController : MonoBehaviour
     
     void SetHealthText()
     {
+        health = Mathf.Clamp(health, 0, 100);
         if (healthText != null) healthText.text = "Health: " + health.ToString();
     }
     
@@ -349,17 +303,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void ActiateSpeedBoost()
-    {
-        speed = baseSpeed * boostMultiplier;
-        maxSpeed = baseMaxSpeed * boostMultiplier;
-        boostEndTime = Time.time + boostDuration;
-        boostActive = true;
-    }
     
     public void TriggerWin()
     {
-        // FIXED: Removed duplicate destroy logic
         foreach (string tag in tagsToDestroy)
         {
             GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
@@ -379,6 +325,7 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(FadeOutText(tmp));
             }
         }
+        
         GameObject torch = GameObject.FindWithTag("Torch");
         if (torch != null) torch.SetActive(true);
     }

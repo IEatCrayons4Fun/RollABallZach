@@ -26,6 +26,10 @@ public class PlayerSwitcher : MonoBehaviour
             switched = true;
         }
         
-        GameObject.Find("Arrow System").SetActive(false);
+        GameObject arrowSystem = GameObject.Find("Arrow System");
+        if (arrowSystem != null)
+        {
+            arrowSystem.SetActive(false);
+        }
     }
 }

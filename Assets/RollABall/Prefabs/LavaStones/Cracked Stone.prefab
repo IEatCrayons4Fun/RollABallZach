@@ -245,5 +245,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrackedStone
   disappearDelay: 0.1
-  disappearSound: {fileID: 8300000, guid: c9781bbb655a1bb4f9e7e9d88ab021b5, type: 3}
+  disappearSound: {fileID: 8300000, guid: 82de23cf97d86854abd3e8621e6f14cb, type: 3}
   audioSource: {fileID: 6878692320817607913}
