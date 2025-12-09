@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
             }
             SetHealthText();
             GameObject countTextObj = GameObject.Find("CountText");
-            if (countTextObj != null) Destroy(countTextObj);
+            if (countTextObj != null) countTextObj.SetActive(false);
         }
 
         Cursor.lockState = CursorLockMode.Locked;
