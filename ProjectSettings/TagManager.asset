@@ -8,6 +8,14 @@ TagManager:
   - Ground
   - Wall
   - Enemy
+  - BigPickUp
+  - InstaWin
+  - Hazard
+  - Lava
+  - Door
+  - HidingDoor
+  - Torch
+  - SpeedPickUp
   layers:
   - Default
   - TransparentFX
